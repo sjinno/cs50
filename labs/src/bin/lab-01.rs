@@ -6,12 +6,12 @@ enum Input {
 }
 
 fn main() {
-    let mut start_size: u32 = take_user_input(9, Input::Start);
+    let start_size: u32 = take_user_input(9, Input::Start);
 
     let min_end_size = start_size + (start_size / 3) - (start_size / 4);
     let end_size: u32 = take_user_input(min_end_size, Input::End);
 
-    let years = calculate_years(&mut start_size, end_size);
+    let years = calculate_years(start_size, end_size);
     println!("Years: {}", years);
 }
 
@@ -52,13 +52,18 @@ fn take_user_input(min: u32, in_ty: Input) -> u32 {
     }
 }
 
-fn calculate_years(current_size: &mut u32, end_size: u32) -> u32 {
-    let mut counter = 0;
-    while *current_size < end_size {
-        *current_size += (*current_size / 3) - (*current_size / 4);
-        counter += 1;
-    }
-    counter
+fn calculate_years(current_size: u32, end_size: u32) -> u32 {
+    (1..)
+        .scan(current_size, |state, x| {
+            if *state < end_size {
+                *state += (*state / 3) - (*state / 4);
+                Some(x)
+            } else {
+                None
+            }
+        })
+        .last()
+        .unwrap()
 }
 
 // 1. Given `n` llamas, `n / 3` will be born and `n / 4` will die every year.
