@@ -16,38 +16,27 @@ fn main() {
 }
 
 fn take_user_input(min: u32, in_ty: Input) -> u32 {
-    match in_ty {
-        Input::Start => {
-            print!("Start size: ");
-            io::stdout().flush().unwrap();
-            let mut input = String::new();
-            io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to read line");
+    if matches!(in_ty, Input::Start) {
+        print!("Start size: ");
+    } else {
+        print!("End size: ");
+    }
+    io::stdout().flush().unwrap();
 
-            match input.trim().parse::<u32>() {
-                Ok(n) if n > (min - 1) => return n,
-                _ => {
-                    println!("Please enter a positive number greater than or equal to 9");
-                    return take_user_input(min, in_ty);
-                }
-            };
-        }
-        Input::End => {
-            print!("End size: ");
-            io::stdout().flush().unwrap();
-            let mut input = String::new();
-            io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to read line");
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
 
-            match input.trim().parse::<u32>() {
-                Ok(n) if n > (min - 1) => return n,
-                _ => {
-                    println!("Please enter a number greater than or equal to {}", min);
-                    return take_user_input(min, in_ty);
-                }
-            };
+    match input.trim().parse::<u32>() {
+        Ok(n) if n > (min - 1) => n,
+        _ => {
+            if matches!(in_ty, Input::Start) {
+                println!("Please enter a positive number greater than or equal to 9");
+            } else {
+                println!("Please enter a number greater than or equal to {}", min);
+            }
+            take_user_input(min, in_ty)
         }
     }
 }
