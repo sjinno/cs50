@@ -12,10 +12,9 @@ fn main() {
         std::process::exit(1);
     }
 
-    if let Some(key) = env::args().skip(1).next() {
+    if let Some(key) = env::args().nth(1) {
         match key.len() {
             26 => {
-                println!("{}", key);
                 let key = ('A'..='Z')
                     .zip(key.to_ascii_uppercase().chars())
                     .collect::<Key>();
@@ -45,10 +44,6 @@ fn get_input() -> String {
     input
 }
 
-fn is_cap(c: char, c_cap: char) -> bool {
-    c == c_cap
-}
-
 fn cipher(key: Key, text: String) -> String {
     text.chars()
         .map(|c| {
@@ -56,7 +51,7 @@ fn cipher(key: Key, text: String) -> String {
             match c_cap {
                 ('A'..='Z') => {
                     let val = key.get(&c_cap);
-                    if is_cap(c, c_cap) {
+                    if c == c_cap {
                         *val.unwrap()
                     } else {
                         val.unwrap().to_ascii_lowercase()
