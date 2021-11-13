@@ -11,7 +11,7 @@ fn main() {
     // sort::selection_sort(&mut arr);
     // eprintln!("{:?}", arr);
 
-    let arr = vec![7, 5, 1, 6, 2];
-    let sorted_arr = sort::merge_sort(&arr);
-    eprintln!("{:?}", sorted_arr);
+    let mut arr = vec![7, 5, 1, 6, 2];
+    sort::merge_sort(&mut arr);
+    eprintln!("{:?}", arr);
 }

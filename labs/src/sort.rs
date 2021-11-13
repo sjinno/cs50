@@ -28,7 +28,7 @@ fn find_index_of_min<T: PartialOrd + ToOwned<Owned = T>>(arr: &[T]) -> usize {
     } else {
         let mut min = arr[0].to_owned();
         let mut index = 0;
-        for i in 1..arr.len() {
+        for (i, _elt) in arr.iter().enumerate().skip(1) {
             if min > arr[i] {
                 min = arr[i].to_owned();
                 index = i;
@@ -47,48 +47,40 @@ pub fn selection_sort<T: PartialOrd + Clone + Debug>(arr: &mut Vec<T>) {
     }
 }
 
-//  0  1  2  3  4
-// [7, 5, 1, 6, 2]
-pub fn merge_sort<T: Clone + PartialOrd + ToOwned<Owned = T> + Debug>(arr: &[T]) -> Vec<T> {
-    eprintln!("{:?}", arr);
-
+pub fn merge_sort<T: Copy + PartialOrd>(arr: &mut [T]) {
     if arr.len() == 1 {
-        return arr.to_vec();
+        return;
     }
 
-    let split_point = arr.len() / 2; // 5 / 2 = 2
-    let chunk1 = merge_sort(&arr[0..split_point]); // L[7, 5] -> L[7], R[5]
-    let chunk2 = merge_sort(&arr[split_point..]); // R[1, 6, 2] -> L[1], R[6, 2] -> L[6], R[2]
+    let split_point = arr.len() / 2;
+    merge_sort(&mut arr[..split_point]);
+    merge_sort(&mut arr[split_point..]);
 
-    eprintln!("chunk1: {:?}", chunk1);
-    eprintln!("chunk2: {:?}", chunk2);
+    let mut res = Vec::with_capacity(arr.len());
 
+    merge(&arr[..split_point], &arr[split_point..], &mut res);
+
+    arr.copy_from_slice(&res);
+}
+
+fn merge<T: Copy + PartialOrd>(chunk1: &[T], chunk2: &[T], res: &mut Vec<T>) {
     let mut l = 0;
     let mut r = 0;
-    let mut v = Vec::new();
 
     while l < chunk1.len() && r < chunk2.len() {
-        eprintln!("left: {}", l);
-        eprintln!("right: {}", r);
-
-        eprintln!("{:?}", chunk1[l]);
-        eprintln!("{:?}", chunk2[r]);
-
         if chunk1[l] < chunk2[r] {
-            v.push(chunk1[l].to_owned());
+            res.push(chunk1[l]);
             l += 1;
         } else {
-            v.push(chunk2[r].to_owned());
+            res.push(chunk2[r]);
             r += 1;
         }
     }
 
-    if l != chunk1.len() {
-        v.extend_from_slice(&chunk1[l..]);
-    } else {
-        v.extend_from_slice(&chunk2[r..]);
+    if l < chunk1.len() {
+        res.extend_from_slice(&chunk1[l..]);
     }
-
-    eprintln!("VVVVVVVVVV {:?}", v);
-    v
+    if r < chunk2.len() {
+        res.extend_from_slice(&chunk2[r..]);
+    }
 }
