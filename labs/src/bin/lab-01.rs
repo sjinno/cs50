@@ -1,4 +1,4 @@
-use std::io::{self, Write};
+use labs::prompt;
 
 enum Input {
     Start,
@@ -16,17 +16,11 @@ fn main() {
 }
 
 fn take_user_input(min: u32, in_ty: Input) -> u32 {
-    if matches!(in_ty, Input::Start) {
-        print!("Start size: ");
+    let input = if matches!(in_ty, Input::Start) {
+        prompt::get_input("Start size: ")
     } else {
-        print!("End size: ");
-    }
-    io::stdout().flush().unwrap();
-
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
+        prompt::get_input("End size: ")
+    };
 
     match input.trim().parse::<u32>() {
         Ok(n) if n > (min - 1) => n,

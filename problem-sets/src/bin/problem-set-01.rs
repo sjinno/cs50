@@ -1,5 +1,5 @@
+use problem_sets::prompt;
 use std::fmt::{self, Display};
-use std::io::{self, Write};
 
 fn main() {
     // mario();
@@ -11,13 +11,7 @@ fn mario() {
     let height: u8;
 
     loop {
-        print!("Height: ");
-        io::stdout().flush().unwrap();
-
-        let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Faileed to read line");
+        let input = prompt::get_input("Height: ");
 
         match input.trim().parse::<u8>() {
             Ok(num) if num > 0 && num < 9 => height = num,
@@ -66,13 +60,7 @@ fn luhn() -> CreditCard {
     let mut card_type: CreditCard;
 
     loop {
-        print!("Number: ");
-        io::stdout().flush().unwrap();
-
-        let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Faileed to read line");
+        let input = prompt::get_input("Number: ");
 
         number = input
             .trim()
