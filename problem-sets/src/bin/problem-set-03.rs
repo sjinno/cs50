@@ -16,6 +16,7 @@ mod tideman {
     use problem_sets::input;
     use std::cmp::Ordering;
     use std::fmt::{self, Display};
+    use std::io::BufRead;
 
     #[allow(dead_code)]
     fn capitalize(name: &str) -> String {
@@ -254,8 +255,11 @@ mod tideman {
         }
 
         pub fn load_candidates(mut self, file: &str) -> Result<Self, Error> {
-            let data = input::load_data(file)?;
-            self.candidates = data.map(|c| c.unwrap().to_ascii_lowercase()).collect();
+            let reader = input::get_reader(file)?;
+            self.candidates = reader
+                .lines()
+                .map(|c| c.unwrap().to_ascii_lowercase())
+                .collect();
             println!(
                 "Candidates: {}",
                 self.candidates
