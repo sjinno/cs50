@@ -1,4 +1,4 @@
-use labs::prompt;
+use labs::input;
 
 enum Input {
     Start,
@@ -17,9 +17,9 @@ fn main() {
 
 fn take_user_input(min: u32, in_ty: Input) -> u32 {
     let input = if matches!(in_ty, Input::Start) {
-        prompt::get_input("Start size: ")
+        input::get_input("Start size: ")
     } else {
-        prompt::get_input("End size: ")
+        input::get_input("End size: ")
     };
 
     match input.trim().parse::<u32>() {

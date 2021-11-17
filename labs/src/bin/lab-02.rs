@@ -1,5 +1,4 @@
-use labs::prompt;
-
+use labs::input;
 use std::cmp::Ordering;
 
 fn main() {
@@ -7,8 +6,8 @@ fn main() {
 }
 
 fn scrabble() {
-    let input0 = prompt::get_input("Player 1: ");
-    let input1 = prompt::get_input("Player 2: ");
+    let input0 = input::get_input("Player 1: ");
+    let input1 = input::get_input("Player 2: ");
 
     match calculate_score(input0).cmp(&calculate_score(input1)) {
         Ordering::Equal => println!("Tie!"),
