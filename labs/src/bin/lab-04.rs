@@ -1,5 +1,6 @@
 use cli::Args;
 use failure::Error;
+use labs::input;
 
 fn main() -> Result<(), Error> {
     let args = cli::process_args()?;
@@ -8,7 +9,7 @@ fn main() -> Result<(), Error> {
 }
 
 mod cli {
-    use failure::Error;
+    use super::Error;
 
     #[derive(Debug)]
     pub struct Args {
@@ -18,9 +19,7 @@ mod cli {
     }
 
     pub fn process_args() -> Result<Args, Error> {
-        use std::env;
-
-        let num_of_args = env::args().skip(1).count();
+        let num_of_args = std::env::args().skip(1).count();
         if num_of_args != 3 {
             println!(
                 "Takes three arguments, but given {} arguments.\n",
@@ -31,38 +30,25 @@ mod cli {
             std::process::exit(1);
         }
 
-        let mut args = env::args().skip(1);
-        let input = args.next().unwrap();
-        let output = args.next().unwrap();
-        let factor = match args.next().unwrap().trim().parse::<f32>() {
-            Ok(val) => val,
-            Err(err) => {
-                println!("Error: {}", err);
-                std::process::exit(1);
-            }
-        };
-
+        let mut args = std::env::args().skip(1);
         Ok(Args {
-            input,
-            output,
-            factor,
+            input: args.next().unwrap(),
+            output: args.next().unwrap(),
+            factor: args.next().unwrap().trim().parse::<f32>()?,
         })
     }
 }
 
 mod wav {
-    use failure::Error;
-
-    use crate::Args;
-    use labs::input;
-
-    use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-    use std::fs::File;
-    use std::io::{Cursor, Read, Write};
+    use super::*;
 
     const HEADER_SIZE: usize = 44;
 
     pub fn modify_volume(args: &Args) -> Result<(), Error> {
+        use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
+        use std::fs::File;
+        use std::io::{Cursor, Read, Write};
+
         let Args {
             input,
             output,
